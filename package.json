@@ -1,14 +1,32 @@
 {
-  "name": "level-tree",
-  "version": "0.0.0",
-  "description": "",
+  "name": "level-subtree",
+  "version": "1.0.0",
+  "description": "build and maintain a tree from the sublevels in a leveldb instance",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "BSD-2-Clause",
+  "author": "hij1nx",
+  "license": "MIT",
+  "devDependencies": {
+    "level": "~0.15.0"
+  },
+  "directories": {
+    "test": "test"
+  },
   "dependencies": {
     "level": "~0.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hij1nx/level-subtree.git"
+  },
+  "keywords": [
+    "leveldb",
+    "tree",
+    "sublevel"
+  ],
+  "bugs": {
+    "url": "https://github.com/hij1nx/level-subtree/issues"
   }
 }
