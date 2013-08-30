@@ -1,31 +1,44 @@
-var Tree = module.exports = function(db, opts) {
+var Tree = module.exports = function (db, opts) {
 
   if (!(this instanceof Tree)) {
     return new Tree(db)
   }
 
-  this.sep = (opts && opts.sep) || '\xff!'
+  this.sep = (opts && opts.sep) || '\xff'
   this.db = db
   this.tree = {}
 }
 
-Tree.prototype.init = function(sep, cb) {
+Tree.prototype.init = function (sep, cb) {
 
   var that = this
+  var levels = 0
 
-  this.db
-    .createReadStream({ values: false })
-    .on('data', function(key) {
-      that.addKey(key)
-    })
-    .on('end', function() {
+  function end() {
+    levels--
+    if (levels == 0) {
       cb(that.tree)
-    })
+    }
+  }
+
+  function search(start) {
+    start = start || sep
+
+    that.db
+      .createReadStream({ start: start, values: false, limit: 1 })
+      .on('data', function (key) {
+        levels++
+        that.addKey(key)
+        search(key + sep + sep)
+      })
+      .on('end', end)
+  }
+  search();
 }
 
-Tree.prototype.addKey = function(key) {
+Tree.prototype.addKey = function (key) {
   key = key.split(this.sep)
-  key = key.filter(function() { return true })
+  key = key.filter(function(seg) { if (seg) return true })
 
   var parent = this.tree
   key.forEach(function(seg) {
@@ -34,7 +47,7 @@ Tree.prototype.addKey = function(key) {
   return this.tree
 }
 
-Tree.prototype.update = function(key) {
+Tree.prototype.update = function (key) {
   return this.addKey(key)
 }
 
