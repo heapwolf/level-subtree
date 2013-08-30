@@ -1,7 +1,7 @@
 # SYNOPSIS
 build and maintain a tree from the sublevels in a leveldb instance
 
-# EXAMPLE
+# USAGE
 To initialize level-subtree
 ```js
 var require('level-subtree')
