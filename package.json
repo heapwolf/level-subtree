@@ -14,9 +14,6 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "level": "~0.15.0"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/hij1nx/level-subtree.git"
