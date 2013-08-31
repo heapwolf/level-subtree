@@ -1,39 +1,35 @@
 var level = require('level')
 var Tree = require('../index')
 var assert = require('assert')
+var Sublevel = require('level-sublevel')
 
-var db = level('./db')
+var db = level(__dirname + '/db')
+var t = Tree(db)
+db = Sublevel(db)
 
-var sep = '\xff'
-
-function seed() {
-
-  db.batch(
-    [
-      { type: 'put', key: sep + 'test1', value: 0 }, // leaf
-      { type: 'put', key: sep + 'test1' + sep + sep + 'test11', value: 0 }, // leaf
-      { type: 'put', key: sep + 'test2', value: 0 }, // leaf
-      { type: 'put', key: sep + 'test2' + sep, value: 0 }, // value
-      { type: 'put', key: sep + 'test2' + sep + sep + 'test22', value: 0 } // leaf
-    ],
-    function(err) {
-      if (err) console.log(err)
-    }
-  )
+function seed(cb) {
+  var SL1 = db.sublevel('SL1')
+  var SL2 = db.sublevel('SL2')
+  SL1.put('K1', 0, function() {
+    SL2.put('K2', 0, function() {
+      SL21 = SL2.sublevel('SL21')
+      SL21.put('K3', 0, function() {
+        cb()
+      })
+    })
+  })
 }
 
-var expected = { 
-  test1: { 
-    test11: {} 
-  }, 
-  test2: { 
-    test22: {} 
-  } 
+var expected = {
+  SL1: {},
+  SL2: {
+    SL21: {}
+  }
 }
 
-seed()
-
-Tree(db).init(sep, function(result) {
-  assert.deepEqual(result, expected, 'the output tree matches the input data');
+seed(function() {
+  t.init(function(result) {
+    assert.deepEqual(result, expected, 'the output tree matches the input data');
+  })
 })
 

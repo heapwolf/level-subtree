@@ -5,18 +5,22 @@ var Tree = module.exports = function (db, opts) {
   }
 
   this.sep = (opts && opts.sep) || '\xff'
+  this.rs = db.createReadStream
+  this.sublevelRE = new RegExp(this.sep + '(.*?)' + this.sep, 'gi')
+  this.sepRE = new RegExp(this.sep, 'gi')
   this.db = db
   this.tree = {}
 }
 
-Tree.prototype.init = function (sep, cb) {
+Tree.prototype.init = function (cb) {
 
   var that = this
+  var sep = this.sep
   var levels = 0
 
   function end() {
     levels--
-    if (levels == 0) {
+    if (levels < 0) {
       cb(that.tree)
     }
   }
@@ -24,8 +28,9 @@ Tree.prototype.init = function (sep, cb) {
   function search(start) {
     start = start || sep
 
-    that.db
-      .createReadStream({ start: start, values: false, limit: 1 })
+    that
+      .rs
+      .call(that.db, { start: start, values: false, limit: 1 })
       .on('data', function (key) {
         levels++
         that.addKey(key)
@@ -37,13 +42,17 @@ Tree.prototype.init = function (sep, cb) {
 }
 
 Tree.prototype.addKey = function (key) {
-  key = key.split(this.sep)
-  key = key.filter(function(seg) { if (seg) return true })
 
+  key = key.match(this.sublevelRE)
+  
+  var that = this
   var parent = this.tree
+  
   key.forEach(function(seg) {
+    seg = seg.replace(that.sepRE, '')
     parent = parent[seg] || (parent[seg] = {})
   })
+  
   return this.tree
 }
 
