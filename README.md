@@ -13,11 +13,11 @@ var t = Tree(db).init(function(tree) {
 
 Applied to a database with the following keys
 ```ascii
-\xfftest1
-\xfftest1\xff\xfftest11
+\xfftest1\xff
+\xfftest1\xff\xfftest11\xff
 \xfftest1\xffkey
-\xfftest2
-\xfftest2\xff\xfftest22
+\xfftest2\xff
+\xfftest2\xff\xfftest22\xff
 ```
 
 Produces an object that looks like this
