@@ -21,7 +21,7 @@ Tree.prototype.init = function (cb) {
   function end() {
     levels--
     if (levels < 0) {
-      cb(that.tree)
+      cb(null, that.tree)
     }
   }
 
@@ -36,6 +36,7 @@ Tree.prototype.init = function (cb) {
         that.addKey(key)
         search(key + sep + sep)
       })
+      .on('error', cb)
       .on('end', end)
   }
   search();

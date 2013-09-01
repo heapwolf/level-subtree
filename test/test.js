@@ -28,7 +28,7 @@ var expected = {
 }
 
 seed(function() {
-  t.init(function(result) {
+  t.init(function(err, result) {
     assert.deepEqual(result, expected, 'the output tree matches the input data');
   })
 })
