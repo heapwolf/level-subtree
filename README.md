@@ -6,7 +6,7 @@ To initialize level-subtree
 ```js
 var Tree = require('level-subtree')
 var db = require('level')('./db')
-var t = Tree(db).init(function(tree) {
+var t = Tree(db).init(function(err, tree) {
   // creates a tree from the existing keys.
 })
 ```
