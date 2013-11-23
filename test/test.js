@@ -10,10 +10,29 @@ db = Sublevel(db)
 function seed(cb) {
   var SL1 = db.sublevel('SL1')
   var SL2 = db.sublevel('SL2')
-  SL1.put('K1', 0, function() {
-    SL2.put('K2', 0, function() {
-      SL21 = SL2.sublevel('SL21')
-      SL21.put('K3', 0, function() {
+  var SL21 = SL2.sublevel('SL2A')
+
+  SL1.batch(
+    [
+      { type: 'put', key: 'K1', value: 0, },
+      { type: 'put', key: 'K2', value: 0, },
+      { type: 'put', key: 'K3', value: 0, }
+    ], 
+    function() {
+    SL2.batch(
+      [
+        { type: 'put', key: 'K1', value: 0, },
+        { type: 'put', key: 'K2', value: 0, },
+        { type: 'put', key: 'K3', value: 0, },
+        { type: 'put', key: 'K4', value: 0, },
+        { type: 'put', key: 'K5', value: 0, }
+      ], function() {
+      SL21.batch(
+        [
+          { type: 'put', key: 'K1', value: 0, },
+          { type: 'put', key: 'K2', value: 0, },
+          { type: 'put', key: 'K3', value: 0, }
+        ], function() {
         cb()
       })
     })
@@ -23,7 +42,7 @@ function seed(cb) {
 var expected = {
   SL1: {},
   SL2: {
-    SL21: {}
+    SL2A: {}
   }
 }
 

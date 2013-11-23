@@ -25,21 +25,27 @@ Tree.prototype.init = function (cb) {
     }
   }
 
-  function search(start) {
-    start = start || sep
+  function search(startkey, endkey) {
+    startkey = startkey || sep
+
+    var params = {
+      values: false,
+      start: startkey,
+      limit: 1
+    }
 
     that
       .rs
-      .call(that.db, { start: start, values: false, limit: 1 })
+      .call(that.db, params)
       .on('data', function (key) {
+        var seg = that.addKey(key)
         levels++
-        that.addKey(key)
-        search(key + sep + sep)
+        search(seg + sep)
       })
       .on('error', cb)
       .on('end', end)
   }
-  search();
+  search()
 }
 
 Tree.prototype.addKey = function (key) {
@@ -49,12 +55,12 @@ Tree.prototype.addKey = function (key) {
   var that = this
   var parent = this.tree
   
-  key.forEach(function(seg) {
+  key.map(function(seg) {
     seg = seg.replace(that.sepRE, '')
     parent = parent[seg] || (parent[seg] = {})
   })
-  
-  return this.tree
+
+  return key.join('')
 }
 
 Tree.prototype.update = function (key) {
