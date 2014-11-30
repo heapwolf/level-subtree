@@ -1,7 +1,7 @@
 var Tree = module.exports = function (db, opts) {
 
   if (!(this instanceof Tree)) {
-    return new Tree(db)
+    return new Tree(db, opts)
   }
 
   this.sep = (opts && opts.sep) || '\xff'

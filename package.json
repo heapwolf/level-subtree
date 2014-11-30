@@ -1,6 +1,6 @@
 {
   "name": "level-subtree",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "build and maintain a tree from the sublevels in a leveldb instance",
   "main": "index.js",
   "scripts": {
