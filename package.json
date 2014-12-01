@@ -1,6 +1,6 @@
 {
   "name": "level-subtree",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "build and maintain a tree from the sublevels in a leveldb instance",
   "main": "index.js",
   "scripts": {
@@ -8,10 +8,6 @@
   },
   "author": "hij1nx",
   "license": "MIT",
-  "devDependencies": {
-    "level": "~0.15.0",
-    "level-sublevel": "~5.0.1"
-  },
   "directories": {
     "test": "test"
   },
@@ -26,5 +22,9 @@
   ],
   "bugs": {
     "url": "https://github.com/hij1nx/level-subtree/issues"
+  },
+  "devDependencies": {
+    "level": "~0.15.0",
+    "level-sublevel": "^6.3.15"
   }
 }

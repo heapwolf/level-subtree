@@ -1,10 +1,10 @@
-var Tree = module.exports = function (db, opts) {
+var Tree = module.exports = function (db) {
 
   if (!(this instanceof Tree)) {
-    return new Tree(db, opts)
+    return new Tree(db)
   }
 
-  this.sep = (opts && opts.sep) || '\xff'
+  this.sep = '!'
   this.rs = db.createReadStream
   this.sublevelRE = new RegExp(this.sep + '(.*?)' + this.sep, 'gi')
   this.sepRE = new RegExp(this.sep, 'gi')
@@ -25,13 +25,15 @@ Tree.prototype.init = function (cb) {
     }
   }
 
-  function search(startkey, endkey) {
-    startkey = startkey || sep
+  !function search(startkey, endkey) {
 
     var params = {
       values: false,
-      start: startkey,
       limit: 1
+    }
+
+    if (startkey) {
+      params.gte = startkey;
     }
 
     that
@@ -40,27 +42,30 @@ Tree.prototype.init = function (cb) {
       .on('data', function (key) {
         var seg = that.addKey(key)
         levels++
-        search(seg + sep)
+        search(seg + '~')
       })
       .on('error', cb)
       .on('end', end)
-  }
-  search()
+  }()
 }
 
 Tree.prototype.addKey = function (key) {
 
-  key = key.match(this.sublevelRE)
-  
+  match = key.match(this.sublevelRE)
+
   var that = this
   var parent = this.tree
-  
-  key.map(function(seg) {
+
+  if (!match) return key;
+
+  match = match[0].split('#');
+
+  match.map(function(seg) {
     seg = seg.replace(that.sepRE, '')
     parent = parent[seg] || (parent[seg] = {})
   })
 
-  return key.join('')
+  return match[0];
 }
 
 Tree.prototype.update = function (key) {
