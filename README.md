@@ -11,6 +11,7 @@ var tree = Tree(db)
 var handle = tree.init(function(err, tree) {
   // creates a tree from the existing keys.
 })
+```
 
 To update the tree...
 
