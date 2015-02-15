@@ -56,16 +56,17 @@ Tree.prototype.addKey = function (key) {
   var that = this
   var parent = this.tree
 
-  if (!match) return key;
+  if (!match) return key
 
-  match = match[0].split('#');
+  match = match[0].split('#')
 
-  match.map(function(seg) {
+  match = match.map(function(seg) {
     seg = seg.replace(that.sepRE, '')
     parent = parent[seg] || (parent[seg] = {})
+    return seg
   })
 
-  return match[0];
+  return key
 }
 
 Tree.prototype.update = function (key) {
